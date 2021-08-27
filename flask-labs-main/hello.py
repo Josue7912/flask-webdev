@@ -31,4 +31,5 @@ def user(username,age):
 @app.route('/maths/<number>')
 def maths(number):
     x = {number}
-    return f"The Square of {number} is " x^2
+    y = x^2
+    return y
