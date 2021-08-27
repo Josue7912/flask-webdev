@@ -22,3 +22,13 @@ def songs():
 def back():
     return "<a href={{url_for('songs')}}>Songs</a>"\
         "<a href={{url_for('about')}}>About me</a>"
+
+
+@app.route('/user/<username><age>')
+def user(username,age):
+    return f"Hello {username}{age}!"
+
+@app.route('/maths/<number>')
+def maths(number):
+    x = {number}
+    return f"The Square of {number} is " x^2
