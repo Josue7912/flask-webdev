@@ -1,3 +1,26 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}{{super()}}Ragtime -{% endblock %}
+{% block navbar %}
+<div class="navbar navbar-default" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Ragtime</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
 <head>
     <title>Emily's Dog Costumes - Services</title>
     <meta name="description" content="Simple HTML5 Page layout template with header, footer, sidebar etc.">
@@ -24,3 +47,4 @@
         </address>
     </footer>
 </body>
+{% endblock %}
