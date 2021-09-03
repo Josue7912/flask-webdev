@@ -1,9 +1,8 @@
 <head>
-    <title>Emily's Dog Costumes - My Costumes</title>
-    <meta name="description" content="Emily's Dog Costumes">
+    <title>Emily's Dog Costumes - Services</title>
+    <meta name="description" content="Simple HTML5 Page layout template with header, footer, sidebar etc.">
     <link rel="stylesheet" href="static/style.css">
 </head>
-
 <body>
     <header>
         <div id="logo"><img src="static/logo.png"><h1>Emily's Dog Costumes</h1></div>
@@ -16,18 +15,7 @@
         </nav>
     </header>
     <section id="pageContent">
-        <main role="main">
-            <article>
-
-                {% for dict_item in costumes_list %}
-                    <h2>{{ dict_item['header'] }}</h2>
-                    <img class="costume" src="{{ dict_item['image'] }}">
-                    <p>{{ dict_item['body'] }}</p>
-                    <br>
-                {% endfor %}
-
-            </article>
-        </main>
+        {% block section %}{% endblock %}
     </section>
     <footer>
         <p>&copy; All rights reserved to Emily, Dog Costume Extraordinaire</p>

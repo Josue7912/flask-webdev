@@ -1,19 +1,26 @@
 from flask import Flask
+from flask import render_template
 
 app = Flask(__name__)
 
 
+#@app.route('/')
+#def welcome():
+#    return "Welcome to Emily's Dog Costumes! See my <a href=\"/services\">"\
+#        "services</a> and current line of <a href=\"/costumes\">costumes</a>"
+
 @app.route('/')
 def welcome():
-    return "Welcome to Emily's Dog Costumes! See my <a href=\"/services\">"\
-        "services</a> and current line of <a href=\"/costumes\">costumes</a>"
+    return render_template('index.html')
 
+#@app.route('/services')
+#def services():
+#    return "I offer custom made costumes for your precious canine companion, "\
+#        "and a free in-home consultation, to get the measurements."
 
 @app.route('/services')
 def services():
-    return "I offer custom made costumes for your precious canine companion, "\
-        "and a free in-home consultation, to get the measurements."
-
+    return render_template('services.html')
 
 @app.route('/costumes')
 def costumes():
@@ -45,4 +52,5 @@ def costumes():
         },
     ]
 
-    return f"Check out my costumes!"
+    return render_template('costumes.html', costumes_list=costumes_list)
+
