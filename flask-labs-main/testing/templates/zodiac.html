@@ -4,13 +4,8 @@
 
 {% block page_content %}
 <h1>Welcome to Ragtime, {% if name %}{{name}}{% else %}Anonymous{% endif %}!</h1>
-<div>
-    {% if not known %}
-    <p>Mucho gusto! (Nice to meet you!)</p>
-    {% else %}
-    <p>Enjoy your stay.</p>
-    {% endif %}
-</div>
+<p>Enjoy your stay.</p>
+<br>
 {{ wtf.quick_form(form) }}
 
 {% endblock page_content %}
