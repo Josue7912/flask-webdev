@@ -5,6 +5,7 @@ from blogger import app
 db = SQLAlchemy(app)
 
 
+
 class User(db.Model):
     __tablename__ = 'users'
     uid = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -14,7 +15,9 @@ class User(db.Model):
     password = db.Column(db.String(50))
     email = db.Column(db.String(50), unique=True, index=True)
     dateofreg = db.Column(db.DateTime, default=datetime.datetime.now)
-
+    #
+    posts = db.relationship('Post', backref='user', lazy='dynamic')
+    #
     def __init__(self, firstname, lastname, username, password, email):
         self.firstname = firstname
         self.lastname = lastname
@@ -30,10 +33,10 @@ class Post(db.Model):
     description = db.Column(db.String(1000))
     puid = db.Column(db.Integer, db.ForeignKey('users.uid'))
 
-    def __init__(self, title, description, puid):
+    def __init__(self, title, description, puid): ##deleted content from parenthesis ", puid"
         self.title = title
         self.description = description
         self.puid = puid
 
 
-db.create_all()
+##db.create_all()

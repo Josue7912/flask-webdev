@@ -3,9 +3,10 @@
 {% block title %}{{super()}} Home{% endblock %}
 
 {% block page_content %}
-<h1>Welcome to Ragtime, {% if name %}{{name}}{% else %}Anonymous{% endif %}!</h1>
+<h1>Welcome to BirthBox, {% if name %}{{name}}{% else %}Anonymous{% endif %}!</h1>
 <p>Enjoy your stay.</p>
 <br>
+
 {{ wtf.quick_form(form) }}
 
 {% endblock page_content %}

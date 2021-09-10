@@ -5,6 +5,11 @@ from . forms import AddPostForm, SignUpForm, SignInForm, AboutUserForm
 
 from blogger import app
 
+##hay que añadir el flask shell context processor (parte de codigo)
+
+@app.shell_context_processor
+def make_shell_context():
+    return dict(db=db, User=User, Post=Post)
 
 @app.route('/')
 def index():

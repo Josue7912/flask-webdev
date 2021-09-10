@@ -69,7 +69,7 @@
     <div id="icon">
     {% for j in user %}
       {% if j.uid == i.puid %}
-     BY: {{j.username}}
+      BY: {{j.username}}
       <a class="glyphicon glyphicon-pencil" href="/update/{{ i.pid }}/{{j.username}}"></a>&nbsp &nbsp
       <a class="glyphicon glyphicon-trash" id="del" href="/delete/{{ i.pid }}/{{j.username}}"></a>
 
