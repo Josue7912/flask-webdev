@@ -4,9 +4,6 @@ from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from config import config
 
-##from blogger import models
-##from blogger import views
-
 bootstrap = Bootstrap()
 db =SQLAlchemy()
 
