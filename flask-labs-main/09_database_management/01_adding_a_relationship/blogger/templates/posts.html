@@ -67,9 +67,9 @@
   <div class="panel-heading">
     <div><h3 class="panel-title">{{i.title}}</h3></div>
     <div id="icon">
-    {% for j in user %}
-      {% if j.uid == i.puid %}
-      BY: {{j.username}}
+      ##as we don't need puid because we have build a relationship, we get rid of the for loop and just keep the "BY" part,
+      ##but replacing the "j.username" for "i.user.username" that is how you can back show the username from user Model
+      BY: {{i.user.username}}
       <a class="glyphicon glyphicon-pencil" href="/update/{{ i.pid }}/{{j.username}}"></a>&nbsp &nbsp
       <a class="glyphicon glyphicon-trash" id="del" href="/delete/{{ i.pid }}/{{j.username}}"></a>
 

@@ -1,9 +1,5 @@
-from flask_sqlalchemy import SQLAlchemy
+from . import db
 import datetime
-from blogger import app
-
-db = SQLAlchemy(app)
-
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -14,6 +10,7 @@ class User(db.Model):
     password = db.Column(db.String(50))
     email = db.Column(db.String(50), unique=True, index=True)
     dateofreg = db.Column(db.DateTime, default=datetime.datetime.now)
+    posts = db.relationship('Post', backref='user', lazy='dynamic')
 
     def __init__(self, firstname, lastname, username, password, email):
         self.firstname = firstname
@@ -28,12 +25,8 @@ class Post(db.Model):
     pid = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(100))
     description = db.Column(db.String(1000))
-    puid = db.Column(db.Integer, db.ForeignKey('users.uid'))
 
-    def __init__(self, title, description, puid):
+
+    def __init__(self, title, description):
         self.title = title
         self.description = description
-        self.puid = puid
-
-
-db.create_all()

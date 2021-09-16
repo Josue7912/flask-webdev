@@ -1,14 +1,8 @@
-from flask import Flask, config
-from flask.blueprints import Blueprint
-from flask_bootstrap import Bootstrap
+from flask import Flask, request, session, redirect, url_for, render_template, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from config import config
 
-##from blogger import models
-##from blogger import views
-
-bootstrap = Bootstrap()
-db =SQLAlchemy()
+db = SQLAlchemy()
 
 def create_app(config_name='default'):
     app = Flask(__name__)
@@ -16,7 +10,6 @@ def create_app(config_name='default'):
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
 
-    bootstrap.init_app(app)
     db.init_app(app)
 
     from .main import main as main_blueprint
