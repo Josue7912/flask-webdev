@@ -1,6 +1,6 @@
 from blogger import app
 from app import create_app, db
-from app.models import User, Posts
+from blogger.models import User, Post
 
 app = create_app()
 
