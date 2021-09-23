@@ -10,7 +10,7 @@ def index():
     form = NameForm()
     if form.validate_on_submit():
         name_entered = form.name.data
-        user = User.query.filter_by(username=name)
+        user = User.query.filter_by(username=name_entered).first()
         if user is None:
             user = User(username=name_entered)
             db.session.add(user)
@@ -21,7 +21,7 @@ def index():
         session['name'] = name_entered
         flash('Great! We hope you enjoy the community')
         return redirect(url_for('.index'))
-    return render_template('index.html', form=form, name=session.get('name'), known=session.get('name'))
+    return render_template('index.html', form=form, name=session.get('name'), known=session.get('known', False))
 
 @main.route('/top-secret')
 @login_required

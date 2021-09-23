@@ -7,6 +7,17 @@ class Config:
         f'sqlite:///{os.path.join(basedir, "data-dev.sqlite")}'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    MAIL_SERVER = 'smtp.gmail.com'
+    MAIL_PORT = 587
+    MAIL_USE_TLS =  True
+
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+
+    RAGTIME_ADMIN = os.environ.get('RAGTIME_ADMIN')
+    RAGTIME_MAIL_SUBJECT_PREFIX = 'Ragtime - '
+    RAGTIME_MAIL_SENDER = f'Ragtime Admin <(RAGTIME_ADMIN)>'
+
     def init_app(app):
         pass
 
