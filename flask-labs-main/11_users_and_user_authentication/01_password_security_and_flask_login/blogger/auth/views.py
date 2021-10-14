@@ -50,7 +50,7 @@ def signin():
                 next = url_for('main.index')
             return redirect(next)
         flash('The username/password is invalid')
-    return render_template('auth/login.html', form=form)
+    return render_template('signin.html', form=form)
 
 @auth.route('/logout')
 def logout():

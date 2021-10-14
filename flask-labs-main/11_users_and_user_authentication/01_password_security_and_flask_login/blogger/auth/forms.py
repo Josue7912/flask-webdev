@@ -22,10 +22,3 @@ class SignInForm(FlaskForm):
     password = PasswordField('Password', validators = [DataRequired(), Length(min=6, max=30)])
     remember_me = BooleanField('Keep me logged in')
     submit = SubmitField('Sign In')
-
-
-class LoginForm(FlaskForm):
-    email = StringField('Email', validators= [DataRequired(), length_check, Email()])
-    password = PasswordField('Password', validators=[ DataRequired(), Length(min=6)])
-    remember_me = BooleanField('Keep me logged in')
-    submit = SubmitField("Log In")

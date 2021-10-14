@@ -24,5 +24,5 @@ def about_user():
 def top_secret():
     return "Welcome, VIP member!"
 
-if __name__ == '__main__':
+##to be excludedif __name__ == '__main__':
     main.run()

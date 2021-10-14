@@ -1,11 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 import datetime
-from flask_login import UserMixin, login_manager
+from flask_login import UserMixin
+from . import db, login_manager
 from werkzeug.security import check_password_hash, generate_password_hash
-from blogger import app
-
-db = SQLAlchemy(app)
-
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
