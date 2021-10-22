@@ -33,8 +33,12 @@
               <div class="noacc">
         Don't have an account! <a href="signup">Sign Up Here</a>
       </div>
+      <div>
+      {% for msg in get_flashed_messages() %}
+      {{ msg }}
+      {% endfor %}
+      </div>
       </form>
-
 </div>
 
     <script src="./Signin Template for Bootstrap_files/ie10-viewport-bug-workaround.js"></script>

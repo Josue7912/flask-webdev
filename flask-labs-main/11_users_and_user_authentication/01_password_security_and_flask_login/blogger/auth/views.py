@@ -10,47 +10,45 @@ from flask_login import login_user, logout_user
 def signup():
     signupform = SignUpForm(request.form)
     if request.method == 'POST':
-        reg = User(signupform.firstname.data, signupform.lastname.data,\
-         signupform.username.data, signupform.password.data,\
-         signupform.email.data)
+        reg = User(firstname = signupform.firstname.data, lastname=signupform.lastname.data,\
+         username=signupform.username.data, password=signupform.password.data,\
+         email=signupform.email.data)
         db.session.add(reg)
         db.session.commit()
-        return redirect(url_for('.index'))
+        return redirect(url_for('main.index'))
     return render_template('signup.html', signupform=signupform)
 
 
 ##@auth.route('/signin', methods=['GET', 'POST'])
 ##def signin():
-    signinform = SignInForm()
-    if request.method == 'POST':
-        em = signinform.email.data
-        log = User.query.filter_by(email=em).first()
-        if log.password == signinform.password.data:
-            current_user = log.username
-            session['current_user'] = current_user
-            session['user_available'] = True
-            return redirect(url_for('show_posts'))
-    return render_template('signin.html', signinform=signinform)
+##    signinform = SignInForm()
+##    if request.method == 'POST':
+##        em = signinform.email.data
+##        log = User.query.filter_by(email=em).first()
+##        if log.password == signinform.password.data:
+##            current_user = log.username
+##            session['current_user'] = current_user
+##            session['user_available'] = True
+##            return redirect(url_for('show_posts'))
+##    return render_template('signin.html', signinform=signinform)
 
 @auth.route('/signin', methods=['GET', 'POST'])
 def signin():
-    form = SignInForm()
-    if form.validate_on_submit():
-        email_entered = form.email.data
+    signinform = SignInForm()
+    if signinform.validate_on_submit():
+        email_entered = signinform.email.data
         user = User.query.filter_by(email=email_entered).first()
         if user is None:
-            user = User(email=email_entered)
-            db.session.add(user)
-            db.session.commit()
+            flash('The user is not registered')
             session['known'] = False
         else:
-            login_user(user, form.remember_me.data)
+            login_user(user, signinform.remember_me.data)
             next = request.args.get('next')
             if next is None or not next.startswith('/'):
                 next = url_for('main.index')
+            flash('testmode')
             return redirect(next)
-        flash('The username/password is invalid')
-    return render_template('signin.html', form=form)
+    return render_template('signin.html', signinform=signinform)
 
 @auth.route('/logout')
 def logout():
@@ -60,10 +58,9 @@ def logout():
 
 ##@auth.route('/logout')
 ##def logout():
-    session.clear()
-    session['user_available'] = False
-    return redirect(url_for('.index'))
-
+##    session.clear()
+##    session['user_available'] = False
+##    return redirect(url_for('.index'))
 
 if __name__ == '__main__':
     auth.run()

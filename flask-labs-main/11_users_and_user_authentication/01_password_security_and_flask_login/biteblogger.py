@@ -1,4 +1,3 @@
-from blogger import app
 from blogger import create_app
 #from blogger.models import User, Post
 

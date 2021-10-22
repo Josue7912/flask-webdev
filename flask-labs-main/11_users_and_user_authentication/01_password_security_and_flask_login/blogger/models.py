@@ -1,4 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy
+##from flask_sqlalchemy import SQLAlchemy
 import datetime
 from flask_login import UserMixin
 from . import db, login_manager
@@ -42,6 +42,7 @@ class Post(db.Model):
     pid = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(100))
     description = db.Column(db.String(1000))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.uid'))
 
 
     def __init__(self, title, description):

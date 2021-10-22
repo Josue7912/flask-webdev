@@ -30,7 +30,7 @@ def login():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
-        name_entered = form.user.data
+        name_entered = form.username.data
         user = User.query.filter_by(username=name_entered).first()
         if user is None:
             user = User(username=name_entered)
@@ -41,7 +41,7 @@ def register():
             session['known'] = True
         session['name'] = name_entered
         flash('Great! Now you can log in to the website')
-        return redirect(url_for('.index'))
+        return redirect(url_for('.login'))
     return render_template('auth/register.html', form=form)
 
 @auth.route('/logout')
@@ -52,11 +52,13 @@ def logout():
 
 @auth.before_app_request
 def before_request():
-    if current_user.is_authenticated \
-            and not current_user.confirmed \
-            and request.blueprint != 'auth' \
-            and request.endpoint != 'static':
-        return redirect(url_for('auth.unconfirmed'))
+    if current_user.is_authenticated :
+        current_user.ping()
+        if not current_user.confirmed \
+                and request.endpoint \
+                and request.blueprint != 'auth' \
+                and request.endpoint != 'static':
+            return redirect(url_for('auth.unconfirmed'))
 
 @auth.route('/confirm/<token>')
 @login_required
@@ -75,6 +77,6 @@ def confirm(token):
 def unconfirmed():
     if current_user.is_anonymous or current_user.confirmed:
         return redirect(url_for('main.index'))
-    return render_template('auth/unconfirmed.html')
+    return render_template('auth/unconfirmed.html', user=current_user)
 
 #@auth.route('/confirm')

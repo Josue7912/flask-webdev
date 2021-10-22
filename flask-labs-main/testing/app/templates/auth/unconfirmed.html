@@ -1,0 +1,20 @@
+{% extends 'base2.html' %}
+{% block title %}{{super()}}Unconfirmed Account{% endblock %}
+
+{% block navbar %}
+{{super()}}
+{% endblock navbar %}
+
+{% block page_content %}
+
+<h1>Welcome to Ragtime {{ user.username }}</h1>
+
+You have not yet confirmed your account.
+
+We would love for you to join our community! Before you do, however, you'll need to confirm your account with us first.
+
+Please check your inbox, and look for an email with a confirmation link.
+
+If you need a new one, no problem! Just <a href="{{ url_for('auth.confirm') }}">click here</a>and we'll send you a new one.
+
+{% endblock page_content %}
