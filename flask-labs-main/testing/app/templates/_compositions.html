@@ -1,0 +1,27 @@
+<ul class="compositions"> {% for composition in compositions %}
+    <li class="composition">
+        <div class="composition-thumbnail"> <img class=img-rounded profile-thumbnail" src="{{ composition.artist.unicornify(size=32) }}"></div>
+        <div class="composition-content"> {# Composition content #}
+            <div class="composition-date">{{ moment(composition.timestamp).fromNow() }}</div>
+            <div class="composition-artist"><a href={{ url_for('main.user', username=composition.artist.username) }}>{{ composition.artist.username }}</a></div>
+            <div class="composition-release">
+                {% if composition.release_type == 1 %}
+                <i>Single</i>
+                {% elif composition.release_type == 2 %}
+                <i>EP</i>
+                {% else %}
+                <i>Album</i>
+                {% endif %}
+            </div>
+            <div class="composition-title"><a href={{ url_for('main.composition', slug=composition.slug) }}>{{ composition.title }}</a></div>
+            <div class="composition-description">
+                {% if composition.description_html %}
+                {{ composition.description_html | safe }}
+                {% else %}
+                {{ composition.description }}
+                {% endif %}
+            </div>
+        </div>
+    </li>
+{% endfor %}
+</ul>
