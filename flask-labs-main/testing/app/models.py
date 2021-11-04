@@ -1,3 +1,4 @@
+import re
 from . import db, login_manager
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import UserMixin, AnonymousUserMixin
@@ -5,6 +6,7 @@ from flask import current_app
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from datetime import datetime
 import hashlib
+import bleach
 
 class Permission:
     FOLLOW = 1
@@ -83,6 +85,7 @@ class User(UserMixin, db.Model):
     location = db.Column(db.String(64))
     bio = db.Column(db.Text())
     last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
+    compositions = db.relationship('Composition', backref='artist', lazy='dynamic')
 
     avatar_hash = db.Column(db.String(32))
     def __init__(self, **kwargs):
@@ -157,3 +160,38 @@ login_manager.anonymous_user = AnonymousUser
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+
+class ReleaseType:
+    SINGLE = 1
+    EXTENDED_PLAY = 2
+    ALBUM = 3
+
+class Composition(db.Model):
+    __tablename__ = 'compositions'
+    id = db.Column(db.Integer, primary_key=True)
+    release_type = db.Column(db.Integer)
+    title = db.Column(db.String(64))
+    description = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime,
+        index=True, default=datetime.utcnow)
+    artist_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    description_html = db.Column(db.Text)
+    slug = db.Column(db.String(128), unique=True)
+
+    @staticmethod
+    def on_changed_description(target, value, oldvalue, initiator):
+        allowed_tags = ['a']
+        html = bleach.linkify(bleach.clean(value,
+                                           tags=allowed_tags,
+                                           strip=True))
+        target.description_html = html
+
+    def generate_slug(self):
+        self.slug = f"{self.id}-" + re.sub(r'[^\W]+', '-', self.title.lower())
+        db.session.add(self)
+        db.session.commit()
+
+db.event.listen(Composition.description,
+                'set',
+                Composition.on_changed_description)

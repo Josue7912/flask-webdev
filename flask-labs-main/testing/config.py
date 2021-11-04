@@ -18,6 +18,8 @@ class Config:
     RAGTIME_MAIL_SUBJECT_PREFIX = 'Ragtime - '
     RAGTIME_MAIL_SENDER = f'Ragtime Admin <(RAGTIME_ADMIN)>'
 
+    RAGTIME_COMPS_PER_PAGE = 20
+
     def init_app(app):
         pass
 

@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, DateField, TextAreaField, BooleanField, SelectField
 from wtforms.validators import DataRequired, Length, ValidationError, Regexp
-from ..models import User
+from ..models import User, ReleaseType
 
 class NameForm(FlaskForm):
     name = StringField("What is your name?", validators=[DataRequired()])
@@ -28,3 +28,16 @@ class AdminLevelEditProfileForm(FlaskForm):
     def validate_username(self, field):
         if User.query.filter_by(username=field.data).first():
             raise ValidationError('Sorry! Username already in use.')
+
+class CompositionForm(FlaskForm):
+    release_type = SelectField("Release Type", coerce=int, default=ReleaseType.SINGLE, validators=[DataRequired()])
+    title = StringField("Title", validators=[DataRequired()])
+    description = TextAreaField("Tell us about your composition")
+    submit = SubmitField("Submit")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.release_type.choices = [
+            (ReleaseType.SINGLE, 'Single'),
+            (ReleaseType.EXTENDED_PLAY, 'EP'),
+            (ReleaseType.ALBUM, 'Album')]

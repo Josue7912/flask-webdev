@@ -1,4 +1,5 @@
 from flask import render_template, flash, redirect, url_for, request, session
+from ..email import send_email
 from . import auth
 from .. import db
 from .forms import LoginForm, RegistrationForm
@@ -37,12 +38,14 @@ def register():
             db.session.add(user)
             db.session.commit()
             session['known'] = False
+            send_email(user.email, "Confirm Your Account", "auth/email/confirm", token=user.generate_confirmation_token())
         else:
             session['known'] = True
         session['name'] = name_entered
         flash('Great! Now you can log in to the website')
         return redirect(url_for('.login'))
     return render_template('auth/register.html', form=form)
+
 
 @auth.route('/logout')
 def logout():
@@ -73,7 +76,8 @@ def confirm(token):
         flash("Whoops! That confirmation link either expired, or it isn't valid")
     return redirect(url_for('main.index'))
 
-@auth.route('/unconfirmed')
+
+@auth.route('/unconfirmed/')
 def unconfirmed():
     if current_user.is_anonymous or current_user.confirmed:
         return redirect(url_for('main.index'))
