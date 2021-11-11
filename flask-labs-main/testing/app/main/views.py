@@ -1,8 +1,8 @@
-from flask import session, render_template, redirect, url_for, flash, current_app, request
+from flask import session, render_template, redirect, url_for, flash, current_app, request, abort
 from . import main
 from .forms import NameForm, EditProfileForm, AdminLevelEditProfileForm, CompositionForm
 from .. import db
-from ..models import Role, User
+from ..models import Role, User, load_user
 from flask_login import login_required, current_user
 from ..models import Permission, Role, User, Composition
 from ..decorators import admin_required, permission_required
@@ -72,7 +72,19 @@ def top_secret():
 @main.route('/user/<username>')
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
-    return render_template('user.html', '_compositions.html', user=user)
+    page = request.args.get('page', 1, type=int)
+    pagination = \
+        Composition.query.filter_by(artist=user).order_by(Composition.timestamp.desc()).paginate(
+            page,
+            per_page=current_app.config['RAGTIME_COMPS_PER_PAGE'],
+            error_out=False)
+    compositions = pagination.items
+    return render_template(
+        'user.html',
+        compositions=compositions,
+        pagination=pagination,
+        user = user
+    )
 
 @main.route('/edit-profile', methods=['GET', 'POST'])
 @login_required
@@ -91,7 +103,7 @@ def edit_profile():
     form.bio.data = current_user.bio
     return render_template('edit_profile.html', form=form)
 
-@main.route('/editprofile/<int:id>', methods=['GET', 'POST'])
+@main.route('/editprofile-admin/<int:id>', methods=['GET', 'POST'])
 @admin_required
 def admin_edit_profile():
     form = AdminLevelEditProfileForm()
@@ -117,7 +129,7 @@ def admin_edit_profile():
 @admin_required
 def edit_profile_admin(id):
     user = User.query.get_or_404(id)
-    form = EditProfileAdminForm(user=user)
+    form = AdminLevelEditProfileForm(user=user)
     if form.validate_on_submit():
         user.email = form.email.data
         user.username = form.username.data
@@ -143,3 +155,28 @@ def edit_profile_admin(id):
 def composition(slug):
     composition = Composition.query.filter_by(slug=slug).first_or_404()
     return render_template('composition.html', compositions=[composition])
+
+
+@main.route('/edit/<slug>', methods=['GET', 'POST'])
+def edit_composition(slug):
+    form = CompositionForm()
+    composition = Composition.query.filter_by(slug=slug).first_or_404()
+    user = User.query.filter_by(id=composition.artist_id).first()
+    if (user == current_user._get_current_object() or user.can(Permission.ADMIN)) \
+            and form.validate_on_submit():
+        composition.release_type=form.release_type.data
+        composition.title=form.title.data
+        composition.description=form.description.data
+        db.session.add(composition)
+        db.session.commit()
+        composition.generate_slug()
+    if not (user == current_user._get_current_object() or user.can(Permission.ADMIN)):
+        abort(403)
+    form.release_type.data = composition.release_type
+    form.title.data = composition.title
+    form.description.data = composition.description
+    return render_template('edit_composition.html', form=form, composition=[composition])
+
+
+
+

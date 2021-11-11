@@ -8,6 +8,8 @@ from flask_sqlalchemy import SQLAlchemy
 from config import config
 
 
+
+
 db = SQLAlchemy()
 migrate = Migrate()
 

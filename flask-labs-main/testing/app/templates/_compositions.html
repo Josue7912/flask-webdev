@@ -3,7 +3,7 @@
         <div class="composition-thumbnail"> <img class=img-rounded profile-thumbnail" src="{{ composition.artist.unicornify(size=32) }}"></div>
         <div class="composition-content"> {# Composition content #}
             <div class="composition-date">{{ moment(composition.timestamp).fromNow() }}</div>
-            <div class="composition-artist"><a href={{ url_for('main.user', username=composition.artist.username) }}>{{ composition.artist.username }}</a></div>
+         <div class="composition-artist"><a href={{ url_for('main.user', username=composition.artist.username) }}>{{ composition.artist.username }}</a></div>
             <div class="composition-release">
                 {% if composition.release_type == 1 %}
                 <i>Single</i>
@@ -21,6 +21,12 @@
                 {{ composition.description }}
                 {% endif %}
             </div>
+            {% if composition.artist == current_user %}
+            <a class="btn btn-default" href="{{ url_for('.edit_composition', slug=composition.slug) }}">Edit Composition</a>
+            {% endif %}
+            {% if current_user.is_administrator() == True %}
+            <a class="btn btn-danger" href="{{ url_for('.edit_composition', slug=composition.slug) }}">Edit as Admin</a>
+            {% endif %}
         </div>
     </li>
 {% endfor %}

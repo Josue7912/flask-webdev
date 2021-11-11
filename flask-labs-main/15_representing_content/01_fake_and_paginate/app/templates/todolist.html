@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% import "_macros.html" as macros %}
 
 {% block js %}
 <script src="{{ url_for('static', filename='js/todolist.js') }}"></script>
@@ -31,6 +32,11 @@
             {% endif %}
           {% endfor %}
         </ul>
+        {% if pagination %}
+        <div class="pagination">
+            {{ macros.pagination_widget(pagination, 'main.todolist', id=todolist.id) }}
+        </div>
+        {% endif %}
       </div>
       <div class="one-half column finished-todos">
         <h6 class="docs-header">{{ todolist.finished_count }} finished</h6>
@@ -41,6 +47,11 @@
             {% endif %}
           {% endfor %}
         </ul>
+        {% if pagination %}
+        <div class="pagination">
+            {{ macros.pagination_widget(pagination, 'main.todolist', id=todolist.id) }}
+        </div>
+        {% endif %}
       </div>
     </div>
   </div>

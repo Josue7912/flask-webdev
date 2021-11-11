@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from flask import render_template, redirect, request, url_for
+from flask import render_template, redirect, request, url_for, current_app
+from werkzeug.exceptions import abort
 from flask_login import current_user, login_required
 
 from app.main import main
@@ -36,7 +37,14 @@ def todolist(id):
     if form.validate_on_submit():
         Todo(form.todo.data, todolist.id, _get_user()).save()
         return redirect(url_for("main.todolist", id=id))
-    return render_template("todolist.html", todolist=todolist, form=form)
+    page = request.args.get('page', 1, type=int)
+    pagination = \
+    Todo.query.filter_by(todolist=todolist).order_by(Todo.created_at.desc()).paginate(
+        page,
+        per_page=current_app.config['APP_TODOS_PER_PAGE'],
+        error_out=False)
+    todos = pagination.items
+    return render_template("todolist.html", todolist=todolist, form=form, todos=todos, pagination=pagination)
 
 
 @main.route("/todolist/new/", methods=["POST"])

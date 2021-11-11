@@ -58,7 +58,7 @@
 
 {% if pagination %}
 <div class="pagination">
-    {{ macros.pagination_widget(pagination, '.users') }}
+    {{ macros.pagination_widget(pagination, 'main.user', username=user.username) }}
 </div>
 {% endif %}
 

@@ -15,6 +15,8 @@ class Config(object):
     SQLALCHEMY_RECORD_QUERIES = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    APP_TODOS_PER_PAGE = 5
+
     @staticmethod
     def init_app(app):
         pass

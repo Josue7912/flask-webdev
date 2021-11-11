@@ -188,7 +188,7 @@ class Composition(db.Model):
         target.description_html = html
 
     def generate_slug(self):
-        self.slug = f"{self.id}-" + re.sub(r'[^\W]+', '-', self.title.lower())
+        self.slug = f"{self.id}-" + re.sub(r'[^\w]+', '-', self.title.lower())
         db.session.add(self)
         db.session.commit()
 
