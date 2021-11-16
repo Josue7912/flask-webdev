@@ -178,5 +178,78 @@ def edit_composition(slug):
     return render_template('edit_composition.html', form=form, composition=[composition])
 
 
+@main.route('/follow/<username>')
+@login_required
+@permission_required(Permission.FOLLOW)
+def follow(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash("That is not a valid user.")
+        return redirect(url_for('.index'))
+    if current_user.is_following(user):
+        flash("Looks like you are already following that user.")
+        return redirect(url_for('.user', username=username))
+    current_user.follow(user)
+    db.session.commit()
+    flash(f"You are now following {username}")
+    return redirect(url_for('.user', username=username))
 
 
+@main.route('/unfollow/<username>')
+@login_required
+@permission_required(Permission.FOLLOW)
+def unfollow(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash("That is not a valid user.")
+        return redirect(url_for('.index'))
+    if not current_user.is_following(user):
+        flash("Looks like you are not following this user.")
+        return redirect(url_for('.user', username=username))
+    current_user.unfollow(user)
+    db.session.commit()
+    flash(f"You are now not following {username}")
+    return redirect(url_for('.user', username=username))
+
+
+@main.route('/followers/<username>')
+def followers(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash("That is not a valid user.")
+        return redirect(url_for('.index'))
+    page = request.args.get('page', 1, type=int)
+    pagination = user.followers.paginate(
+        page,
+        per_page=current_app.config['RAGTIME_FOLLOWERS_PER_PAGE'],
+        error_out=False)
+    # convert to only follower and timestamp
+    follows = [{'user': item.follower, 'timestamp': item.timestamp}
+               for item in pagination.items]
+    return render_template('followers.html',
+                           user=user,
+                           title_text="Followers of",
+                           endpoint='.followers',
+                           pagination=pagination,
+                           follows=follows)
+
+@main.route('/following/<username>')
+def following(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash("That is not a valid user.")
+        return redirect(url_for('.index'))
+    page = request.args.get('page', 1, type=int)
+    pagination = user.following.paginate(
+        page,
+        per_page=current_app.config['RAGTIME_FOLLOWING_PER_PAGE'],
+        error_out=False)
+    # convert to only follower and timestamp
+    following = [{'user': item.following, 'timestamp': item.timestamp}
+               for item in pagination.items]
+    return render_template('followers.html',
+                           user=user,
+                           title_text="Following",
+                           endpoint='.following',
+                           pagination=pagination,
+                           following=following)

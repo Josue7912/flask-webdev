@@ -73,6 +73,13 @@ class Role(db.Model):
     def has_permission(self, perm):
         return self.permissions & perm == perm
 
+class Follow(db.Model):
+    __tablename__ = 'follows'
+
+    follower_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    following_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -86,6 +93,21 @@ class User(UserMixin, db.Model):
     bio = db.Column(db.Text())
     last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
     compositions = db.relationship('Composition', backref='artist', lazy='dynamic')
+
+    following = db.relationship(
+        'Follow',
+        foreign_keys=[Follow.follower_id],
+        backref=db.backref('follower', lazy='joined'),
+        lazy ='dynamic',
+        cascade='all, delete-orphan')
+
+    followers = db.relationship(
+        'Follow',
+        foreign_keys=[Follow.following_id],
+        backref=db.backref('following', lazy='joined'),
+        lazy ='dynamic',
+        cascade='all, delete-orphan')
+
 
     avatar_hash = db.Column(db.String(32))
     def __init__(self, **kwargs):
@@ -146,6 +168,28 @@ class User(UserMixin, db.Model):
         self.last_seen = datetime.utcnow()
         db.session.add(self)
         db.session.commit()
+
+    def follow(self, user):
+        if not self.is_following(user):
+            f = Follow(follower=self, following=user)
+            db.session.add(f)
+
+    def unfollow(self, user):
+        f = self.following.filter_by(following_id=user.id).first()
+        if f:
+            db.session.delete(f)
+
+    def is_following(self, user):
+        if user.id is None:
+            return False
+        return self.following.filter_by(
+            following_id=user.id).first() is not None
+
+    def is_a_follower(self, user):
+        if user.id is None:
+            return False
+        return self.followers.filter_by(
+            follower_id=user.id).first() is not None
 
 
 class AnonymousUser(AnonymousUserMixin):

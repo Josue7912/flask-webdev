@@ -11,8 +11,8 @@ def users(count=10):
     i = 0
     while i < count:
         u = User(
-            _username=fake.user_name(),
-            _email=fake.email(),
+            username=fake.user_name(),
+            email=fake.email(),
             password='password',
             member_since=fake.past_date(),
             last_seen=fake.past_date())
@@ -30,10 +30,9 @@ def todolists(count=75):
     for i in range(count):
         u = User.query.offset(randint(0, user_count - 1)).first()
         t = TodoList(
-            _title=string.capwords(fake.bs()),
+            title=string.capwords(fake.bs()),
             created_at=fake.past_date(),
-            creator=u,
-            todos=fake.text()
+            creator=u
         )
         db.session.add(t)
     db.session.commit()

@@ -42,6 +42,15 @@
         <th scope="row">Last seen</th>
         <td>{{ moment(user.last_seen).fromNow() }}</td>
         </tr>
+        <tr>
+        {% if current_user.can(Permission.FOLLOW) and user != current_user %}
+            {% if current_user.is_following(user) %}
+            <a class="btn btn-default" href="{{ url_for('.unfollow', username=user.username) }}">Unfollow</a>
+            {% else %}
+            <a class="btn btn-default" href="{{ url_for('.follow', username=user.username) }}">Follow</a>
+            {% endif %}
+        {% endif %}
+        </tr>
         </tbody>
     </table>
     {% if user == current_user %}
